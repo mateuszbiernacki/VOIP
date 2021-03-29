@@ -14,16 +14,21 @@ while True:
         # TODO service of login and password, saving address to database, generating, assigning and send token to client
         print("login: ", JSON_DATA["login"])
         print("password: ", JSON_DATA["password"])
-    elif "logout":
+    elif JSON_DATA["command"] == "logout":
         # TODO removing token
         print("login: ", JSON_DATA["login"])
         print("token: ", JSON_DATA["token"])
-    elif "registration":
+    elif JSON_DATA["command"] == "registration":
         # TODO adding user to db
         print("login: ", JSON_DATA["login"])
         print("password: ", JSON_DATA["password"])
-    elif "add_friend":
+    elif JSON_DATA["command"] == "invite_friend":
         # TODO sending invite to friend by login
+        print("login: ", JSON_DATA["login"])
+        print("token: ", JSON_DATA["token"])
+        print("friend login :", JSON_DATA["friend_login"])
+    elif JSON_DATA["command"] == "remove_friend":
+        # TODO removing friend by login
         print("login: ", JSON_DATA["login"])
         print("token: ", JSON_DATA["token"])
         print("friend login :", JSON_DATA["friend_login"])
