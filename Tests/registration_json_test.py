@@ -2,9 +2,9 @@ import socket
 import json
 
 JSON_DATA = {
-    "command": "login",
+    "command": "logout",
     "login": "testowy_login",
-    "password": "testowe_haslo",
+    "token": "testowy_token",
 }
 
 if __name__ == '__main__':
