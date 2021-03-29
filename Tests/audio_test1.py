@@ -3,6 +3,21 @@
 import pyaudio
 import wave
 
+"""That record sound from microphone for 5 second and save this to wave file."""
+
+"""Installation of PyAudio is required.
+    Windows Example:
+        pip install pipwin
+        pipwin install pyaudio
+    MacOS Example:
+        brew install portaudio
+        python3 -m pip install pyaudio
+    Linux Example (not checked yet):
+        sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+        sudo apt-get install ffmpeg libav-tools
+        sudo -s
+        pip install pyaudio"""
+
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
