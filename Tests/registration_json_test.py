@@ -2,12 +2,15 @@ import socket
 import json
 
 JSON_DATA = {
-    "command": "logout",
+    "command": "registration",
     "login": "testowy_login",
-    "token": "testowy_token",
+    "password": "testowe_haslo",
+    "email": "testowe@email"
 }
 
 if __name__ == '__main__':
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(json.dumps(JSON_DATA).encode(), ("185.66.213.128", 2137))
+    sock.sendto(json.dumps(JSON_DATA).encode(), ("localhost", 2137))
+    data, address = sock.recvfrom(1024)
+    print(data)

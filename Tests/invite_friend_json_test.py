@@ -2,7 +2,7 @@ import socket
 import json
 
 JSON_DATA = {
-    "command": "add_friend",
+    "command": "invite_friend",
     "login": "testowy_login",
     "token": "testowe_haslo",
     "friend_login": "testowy_login_kolegi"
