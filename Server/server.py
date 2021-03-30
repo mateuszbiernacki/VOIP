@@ -9,8 +9,28 @@ while True:
     data, address = sock.recvfrom(1024)
     print(data)
     JSON_DATA = json.loads(data.decode('utf-8'))
+    json_response = {
+        "short": "Error",
+        "long": "Undefined operation."
+    }
     if JSON_DATA["command"] == "login":
-        pass
+        result = users.logg_in(login=JSON_DATA["login"], password=JSON_DATA["password"])
+        if result == -1:
+            json_response = {
+                "short": "Error",
+                "long": "User is not existed."
+            }
+        elif result == -2:
+            json_response = {
+                "short": "Error",
+                "long": "Bad password."
+            }
+        else:
+            json_response = {
+                "short": "OK",
+                "long": "Successfully logged.",
+                "token": result
+            }
     elif JSON_DATA["command"] == "logout":
         # TODO removing token
         print("login: ", JSON_DATA["login"])
@@ -22,13 +42,11 @@ while True:
                 "short": "OK",
                 "long": "Successfully added new user."
             }
-            sock.sendto(json.dumps(json_response).encode(), address)
         elif result == 1:
             json_response = {
                 "short": "Error",
                 "long": "Login is occupied."
             }
-            sock.sendto(json.dumps(json_response).encode(), address)
     elif JSON_DATA["command"] == "invite_friend":
         # TODO sending invite to friend by login
         print("login: ", JSON_DATA["login"])
@@ -72,3 +90,4 @@ while True:
         print("login: ", JSON_DATA["login"])
         print("token: ", JSON_DATA["token"])
         print("friend login: ", JSON_DATA["friend_login"])
+    sock.sendto(json.dumps(json_response).encode(), address)
