@@ -32,9 +32,23 @@ while True:
                 "token": result
             }
     elif JSON_DATA["command"] == "logout":
-        # TODO removing token
-        print("login: ", JSON_DATA["login"])
-        print("token: ", JSON_DATA["token"])
+        if JSON_DATA["login"] in users.logged_users:
+            if users.logged_users[JSON_DATA["login"]] == JSON_DATA["token"]:
+                users.logged_users.pop(JSON_DATA["login"])
+                json_response = {
+                    "short": "OK",
+                    "long": "Successful logout."
+                }
+            else:
+                json_response = {
+                    "short": "Error",
+                    "long": "Wrong token."
+                }
+        else:
+            json_response = {
+                "short": "Error",
+                "long": "Wrong login."
+            }
     elif JSON_DATA["command"] == "registration":
         result = users.add_user(login=JSON_DATA["login"], password=JSON_DATA["password"], email=JSON_DATA["email"])
         if result == 0:
