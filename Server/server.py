@@ -32,6 +32,7 @@ while True:
                 "token": result
             }
     elif JSON_DATA["command"] == "logout":
+        # TODO this code should be in users.py
         if JSON_DATA["login"] in users.logged_users:
             if users.logged_users[JSON_DATA["login"]][0] == JSON_DATA["token"]:
                 users.logged_users.pop(JSON_DATA["login"])
@@ -76,14 +77,21 @@ while True:
         print("login: ", JSON_DATA["login"])
         print("email: ", JSON_DATA["email"])
     elif JSON_DATA["command"] == "accept_invite":
-        # TODO
-        print("login: ", JSON_DATA["login"])
-        print("token: ", JSON_DATA["token"])
-        print("friend login: ", JSON_DATA["friend_login"])
-
-        result_0 = users.add_friend(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
-        result_1 = users.add_friend(login=JSON_DATA["friend_login"], friend_login=JSON_DATA["login"])
-        if result_1 == 2 or result_0 == 2:
+        if users.logged_users[JSON_DATA["login"]][0] == JSON_DATA["token"]:
+            result_0 = users.add_friend(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
+            result_1 = users.add_friend(login=JSON_DATA["friend_login"], friend_login=JSON_DATA["login"])
+        else:
+            result_0 = result_1 = 3
+            json_response = {
+                "short": "Error",
+                "long": "Wrong token."
+            }
+        if result_0 != result_1:
+            json_response = {
+                "short": "BigError",
+                "long": "Problem with consistence of data. Please contact with system administrator."
+            }
+        elif result_1 == 2 or result_0 == 2:
             json_response = {
                 "short": "Error",
                 "long": "Friend is already in friend list."
@@ -92,13 +100,12 @@ while True:
             json_response = {
                 "short": "Error",
                 "long": "There is not user with that login."
-        }
+            }
         else:
             json_response = {
                 "short": "OK",
                 "long": "Friend was added."
             }
-
 
     elif JSON_DATA["command"] == "reject_invite":
         # TODO
