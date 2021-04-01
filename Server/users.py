@@ -56,18 +56,21 @@ def logg_in(*, login, password, address):
 
 def add_friend(*, login, friend_login):
     """Returns 0 when process of adding new friend was correct.
+    Returns 1 when there is authorization problem.
     Returns 2 when friend is already in friend list."""
-    if login in logged_users:
+    if login in users:
         if friend_login in users:
+            if friend_login in friends[login]:
+                return 2
             friends[login].append(friend_login)
             friends_file = open(f"Data/friends.json", "w")
             friends_file.write(json.dumps(friends))
             friends_file.close()
             return 0
         else:
-            return 2
+            return 1
     else:
-        return 2
+        return 1
 
 
 def generate_token():
