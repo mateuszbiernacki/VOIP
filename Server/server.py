@@ -32,24 +32,8 @@ while True:
                 "token": result
             }
     elif JSON_DATA["command"] == "logout":
-        # TODO this code should be in users.py
-        if JSON_DATA["login"] in users.logged_users:
-            if users.logged_users[JSON_DATA["login"]][0] == JSON_DATA["token"]:
-                users.logged_users.pop(JSON_DATA["login"])
-                json_response = {
-                    "short": "OK",
-                    "long": "Successful logout."
-                }
-            else:
-                json_response = {
-                    "short": "Error",
-                    "long": "Wrong token."
-                }
-        else:
-            json_response = {
-                "short": "Error",
-                "long": "Wrong login."
-            }
+        result = users.log_out(login=JSON_DATA["login"], token=JSON_DATA["token"])
+        json_response = users.prepare_standard_response(result)
     elif JSON_DATA["command"] == "registration":
         result = users.add_user(login=JSON_DATA["login"], password=JSON_DATA["password"], email=JSON_DATA["email"])
         if result == 0:
@@ -72,41 +56,37 @@ while True:
         print("login: ", JSON_DATA["login"])
         print("token: ", JSON_DATA["token"])
         print("friend login :", JSON_DATA["friend_login"])
-    elif JSON_DATA["command"] == "remind_password":
+    elif JSON_DATA["command"] == "forgot_password":
         # TODO
         print("login: ", JSON_DATA["login"])
         print("email: ", JSON_DATA["email"])
     elif JSON_DATA["command"] == "accept_invite":
-        if users.logged_users[JSON_DATA["login"]][0] == JSON_DATA["token"]:
+        result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
+        if result == 0:
             result_0 = users.add_friend(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
             result_1 = users.add_friend(login=JSON_DATA["friend_login"], friend_login=JSON_DATA["login"])
+            if result_0 != result_1:
+                json_response = {
+                    "short": "BigError",
+                    "long": "Problem with consistence of data. Please contact with system administrator."
+                }
+            elif result_1 == 2 or result_0 == 2:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is already in friend list."
+                }
+            elif result_1 == 1 or result_0 == 1:
+                json_response = {
+                    "short": "Error",
+                    "long": "There is not user with that login."
+                }
+            elif result_1 == 0 and result_0 == 0:
+                json_response = {
+                    "short": "OK",
+                    "long": "Friend was added."
+                }
         else:
-            result_0 = result_1 = 3
-            json_response = {
-                "short": "Error",
-                "long": "Wrong token."
-            }
-        if result_0 != result_1:
-            json_response = {
-                "short": "BigError",
-                "long": "Problem with consistence of data. Please contact with system administrator."
-            }
-        elif result_1 == 2 or result_0 == 2:
-            json_response = {
-                "short": "Error",
-                "long": "Friend is already in friend list."
-            }
-        elif result_1 == 1 or result_0 == 1:
-            json_response = {
-                "short": "Error",
-                "long": "There is not user with that login."
-            }
-        else:
-            json_response = {
-                "short": "OK",
-                "long": "Friend was added."
-            }
-
+            json_response = users.prepare_standard_response(result)
     elif JSON_DATA["command"] == "reject_invite":
         # TODO
         print("login: ", JSON_DATA["login"])
@@ -132,3 +112,4 @@ while True:
         print("token: ", JSON_DATA["token"])
         print("friend login: ", JSON_DATA["friend_login"])
     sock.sendto(json.dumps(json_response).encode(), address)
+

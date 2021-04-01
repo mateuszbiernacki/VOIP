@@ -3,9 +3,9 @@ import json
 
 JSON_DATA = {
     "command": "accept_invite",
-    "login": "mat",
-    "token": 3087317986387775824,
-    "friend_login": "wiki"
+    "login": "mateusz",
+    "token": 102875880177319789,
+    "friend_login": "pat"
 }
 
 if __name__ == '__main__':

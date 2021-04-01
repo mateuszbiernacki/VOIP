@@ -3,8 +3,8 @@ import json
 
 JSON_DATA = {
     "command": "logout",
-    "login": "matt",
-    "token": 213156250974333616,
+    "login": "mateusz",
+    "token": 9030626021319134291,
 }
 
 if __name__ == '__main__':
