@@ -17,6 +17,7 @@ except json.decoder.JSONDecodeError:
 else:
     file.close()
 logged_users = {}
+current_invites = {}
 
 
 def add_user(*, login, password, email):
@@ -46,9 +47,9 @@ def logg_in(*, login, password, address):
     Returns token when user was successfully logged."""
     if login in users:
         if password == users[login][0]:
-            key = generate_token()
-            logged_users[login] = (key, address)
-            return key
+            token = generate_token()
+            logged_users[login] = (token, address)
+            return token
         else:
             return -2
     else:
@@ -65,6 +66,34 @@ def log_out(*, login, token):
         logged_users.pop(login)
         return 0
     return result
+
+
+def save_invite_if_is_possible(*, login, friend_login, token):
+    # TODO test it
+    """Returns 0 when invite was saved.
+        Returns 1 when token is incorrect.
+        Returns 2 when user with that login is not logged.
+        Returns 3 when user with that login is not exist.
+        Returns 4 when friend is not existed.
+        Returns 5 when friend is not logged."""
+
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        if friend_login in users:
+            if friend_login in logged_users:
+                current_invites[friend_login] = login
+                return 0
+            else:
+                return 5
+        else:
+            return 4
+    else:
+        return result
+
+
+def give_address_by_login(*, login):
+    # TODO test it
+    return logged_users[login][1]
 
 
 def add_friend(*, login, friend_login):
