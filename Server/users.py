@@ -63,7 +63,7 @@ def log_out(*, login, token):
     Returns 3 when user with that login is not exist."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        logged_users.pop(login)
+        print('Logged out: ', login, logged_users.pop(login))
         return 0
     return result
 
@@ -94,6 +94,15 @@ def save_invite_if_is_possible(*, login, friend_login, token):
 def give_address_by_login(*, login):
     # TODO test it
     return logged_users[login][1]
+
+
+def is_invited(*, login, friend_login):
+    """Returns 0 when user was invited by friend.
+        Returns 1 when he was not."""
+    if login in current_invites:
+        if current_invites[login] == friend_login:
+            return 0
+    return 1
 
 
 def add_friend(*, login, friend_login):
@@ -134,6 +143,7 @@ def is_it_correct_user_token(*, login, token):
             return 2
     else:
         return 3
+
 
 def prepare_standard_response(int_result):
     if int_result == 0:
