@@ -47,10 +47,27 @@ while True:
                 "long": "Login is occupied."
             }
     elif JSON_DATA["command"] == "invite_friend":
-        # TODO sending invite to friend by login
-        print("login: ", JSON_DATA["login"])
-        print("token: ", JSON_DATA["token"])
-        print("friend login :", JSON_DATA["friend_login"])
+        result = users.save_invite_if_is_possible(login=JSON_DATA['login'],
+                                                  friend_login=JSON_DATA['friend_login'],
+                                                  token=JSON_DATA['token'])
+        if result == 0:
+
+            json_response = {
+                "short": "OK",
+                "long": "Invite was sent."
+            }
+        elif result == 4:
+            json_response = {
+                "short": "Error",
+                "long": "Friend is not existed."
+            }
+        elif result == 5:
+            json_response = {
+                "short": "Error",
+                "long": "Friend is not logged."
+            }
+        else:
+            json_response = users.prepare_standard_response(result)
     elif JSON_DATA["command"] == "remove_friend":
         # TODO removing friend by login
         print("login: ", JSON_DATA["login"])
@@ -63,6 +80,7 @@ while True:
     elif JSON_DATA["command"] == "accept_invite":
         result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
         if result == 0:
+            is_invited = users.is_invited(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
             result_0 = users.add_friend(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
             result_1 = users.add_friend(login=JSON_DATA["friend_login"], friend_login=JSON_DATA["login"])
             if result_0 != result_1:
@@ -80,10 +98,15 @@ while True:
                     "short": "Error",
                     "long": "There is not user with that login."
                 }
-            elif result_1 == 0 and result_0 == 0:
+            elif result_1 == 0 and result_0 == 0 and is_invited == 0:
                 json_response = {
                     "short": "OK",
                     "long": "Friend was added."
+                }
+            elif result_1 == 0 and result_0 == 0 and is_invited == 1:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend was not invite you."
                 }
         else:
             json_response = users.prepare_standard_response(result)
@@ -112,4 +135,5 @@ while True:
         print("token: ", JSON_DATA["token"])
         print("friend login: ", JSON_DATA["friend_login"])
     sock.sendto(json.dumps(json_response).encode(), address)
+    print(users.logged_users)
 
