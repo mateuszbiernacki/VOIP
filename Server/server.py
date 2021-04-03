@@ -69,10 +69,26 @@ while True:
         else:
             json_response = users.prepare_standard_response(result)
     elif JSON_DATA["command"] == "remove_friend":
-        # TODO removing friend by login
-        print("login: ", JSON_DATA["login"])
-        print("token: ", JSON_DATA["token"])
-        print("friend login :", JSON_DATA["friend_login"])
+        result = users.delete_friend(login=JSON_DATA['login'],
+                                     friend_login=JSON_DATA['friend_login'],
+                                     token=JSON_DATA['token'])
+        if result == 0:
+            json_response = {
+                "short": "OK",
+                "long": "User was successfully deleted from friend list."
+            }
+        elif result in {1, 2, 3}:
+            json_response = users.prepare_standard_response(result)
+        elif result == 4:
+            json_response = {
+                "short": "Error",
+                "long": "Friend is not existed."
+            }
+        elif result == 5:
+            json_response = {
+                "short": "Error",
+                "long": "This user is not in your friends list."
+            }
     elif JSON_DATA["command"] == "forgot_password":
         # TODO
         print("login: ", JSON_DATA["login"])

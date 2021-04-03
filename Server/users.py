@@ -124,6 +124,31 @@ def add_friend(*, login, friend_login):
         return 1
 
 
+def delete_friend(*, login, friend_login, token):
+    """Returns 0 when process of deleting new friend was correct.
+        Returns 1 when token is incorrect.
+        Returns 2 when user with that login is not logged.
+        Returns 3 when user with that login is not exist.
+        Returns 4 when friend login is not existed.
+        Returns 5 when that is not your current friend."""
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        if friend_login in users:
+            if friend_login in friends[login]:
+                friends[login].remove(friend_login)
+                friends[friend_login].remove(login)
+                friends_file = open(f"Data/friends.json", "w")
+                friends_file.write(json.dumps(friends))
+                friends_file.close()
+                return 0
+            else:
+                return 5
+        else:
+            return 4
+    else:
+        return result
+
+
 def generate_token():
     return randrange(0, 2 ** 64)
 
