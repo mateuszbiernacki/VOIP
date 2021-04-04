@@ -132,9 +132,17 @@ while True:
         print("token: ", JSON_DATA["token"])
         print("friend login: ", JSON_DATA["friend_login"])
     elif JSON_DATA["command"] == "get_list_of_friends":
-        # TODO
-        print("login: ", JSON_DATA["login"])
-        print("token: ", JSON_DATA["token"])
+        result, list_of_friends = users.get_list_of_friend(login=JSON_DATA["login"],
+                                                           token=JSON_DATA['token'])
+        if result == 0:
+            json_response = {
+                "short": "OK",
+                "long": "Friend was added.",
+                "list_of_friends": list_of_friends
+            }
+        else:
+            json_response = users.prepare_standard_response(result)
+
     elif JSON_DATA["command"] == "connect":
         # TODO
         print("login: ", JSON_DATA["login"])

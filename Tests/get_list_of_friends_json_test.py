@@ -2,10 +2,9 @@ import socket
 import json
 
 JSON_DATA = {
-    "command": "invite_friend",
-    "login": "wiki",
-    "token": 10970415283224494044,
-    "friend_login": "pat"
+    "command": "get_list_of_friends",
+    "login": "pat",
+    "token": 7086943313374581751
 }
 
 if __name__ == '__main__':

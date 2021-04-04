@@ -149,6 +149,14 @@ def delete_friend(*, login, friend_login, token):
         return result
 
 
+def get_list_of_friend(*, login, token):
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        return 0, friends[login]
+    else:
+        return result
+
+
 def generate_token():
     return randrange(0, 2 ** 64)
 

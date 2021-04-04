@@ -3,7 +3,7 @@ import json
 
 JSON_DATA = {
     "command": "login",
-    "login": "mateusz",
+    "login": "wiki",
     "password": "2137"
 }
 
