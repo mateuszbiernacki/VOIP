@@ -154,7 +154,7 @@ def get_list_of_friend(*, login, token):
     if result == 0:
         return 0, friends[login]
     else:
-        return result
+        return result, []
 
 
 def generate_token():
