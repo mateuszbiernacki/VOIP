@@ -1,5 +1,6 @@
 from random import randrange
 import json
+from _smtp import send_email
 
 try:
     file = open(f"Data/users.json", "r")
@@ -18,6 +19,7 @@ else:
     file.close()
 logged_users = {}
 current_invites = {}
+forgot_password_codes = {}
 
 
 def add_user(*, login, password, email):
@@ -155,6 +157,16 @@ def get_list_of_friend(*, login, token):
         return 0, friends[login]
     else:
         return result, []
+
+
+def forgot_password__send_code(*, login):
+    if login in users:
+        code = generate_token()
+        send_email(to=users[login][1], subject='Authentication Code', message=f'Your code: {code}')
+        forgot_password_codes[login] = code
+        return 0
+    else:
+        return 1
 
 
 def generate_token():

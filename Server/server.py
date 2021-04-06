@@ -90,9 +90,17 @@ while True:
                 "long": "This user is not in your friends list."
             }
     elif JSON_DATA["command"] == "forgot_password":
-        # TODO
-        print("login: ", JSON_DATA["login"])
-        print("email: ", JSON_DATA["email"])
+        result = users.forgot_password__send_code(login=JSON_DATA['login'])
+        if result == 0:
+            json_response = {
+                "short": "OK",
+                "long": "Email was sent."
+            }
+        elif result == 1:
+            json_response = {
+                "short": "Error",
+                "long": "Login is not existed."
+            }
     elif JSON_DATA["command"] == "accept_invite":
         result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
         if result == 0:
