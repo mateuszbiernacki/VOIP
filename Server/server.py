@@ -101,6 +101,30 @@ while True:
                 "short": "Error",
                 "long": "Login is not existed."
             }
+    elif JSON_DATA["command"] == "change_password":
+        result = users.change_password(login=JSON_DATA['login'],
+                                       code=JSON_DATA['code'],
+                                       new_password=JSON_DATA['new_password'])
+        if result == 0:
+            json_response = {
+                "short": "OK",
+                "long": "Password was changed."
+            }
+        elif result == 1:
+            json_response = {
+                "short": "Error",
+                "long": "Login is not existed."
+            }
+        elif result == 2:
+            json_response = {
+                "short": "Error",
+                "long": "Code was not generated."
+            }
+        elif result == 3:
+            json_response = {
+                "short": "Error",
+                "long": "Code is wrong."
+            }
     elif JSON_DATA["command"] == "accept_invite":
         result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
         if result == 0:

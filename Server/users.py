@@ -160,11 +160,34 @@ def get_list_of_friend(*, login, token):
 
 
 def forgot_password__send_code(*, login):
+    """Return 0 when code was send.
+    Return 1 when it was not."""
     if login in users:
         code = generate_token()
         send_email(to=users[login][1], subject='Authentication Code', message=f'Your code: {code}')
         forgot_password_codes[login] = code
         return 0
+    else:
+        return 1
+
+
+def change_password(*, login, code, new_password):
+    """Return 0 when password was successfully changed.
+    Return 1 when that login is not existed.
+    Return 2 when there is not generated code yet.
+    Return 3 when code is wrong."""
+    if login in users:
+        if login in forgot_password_codes:
+            if code == forgot_password_codes[login]:
+                users[login][0] = new_password
+                users_file = open(f"Data/users.json", "w")
+                users_file.write(json.dumps(users))
+                users_file.close()
+                return 0
+            else:
+                return 3
+        else:
+            return 2
     else:
         return 1
 
