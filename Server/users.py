@@ -82,7 +82,10 @@ def save_invite_if_is_possible(*, login, friend_login, token):
     if result == 0:
         if friend_login in users:
             if friend_login in logged_users:
-                current_invites[friend_login] = login
+                if friend_login in current_invites:
+                    current_invites[friend_login].append(login)
+                else:
+                    current_invites[friend_login] = [login]
                 return 0
             else:
                 return 5
@@ -93,7 +96,6 @@ def save_invite_if_is_possible(*, login, friend_login, token):
 
 
 def give_address_by_login(*, login):
-    # TODO test it
     return logged_users[login][1]
 
 
@@ -101,7 +103,7 @@ def is_invited(*, login, friend_login):
     """Returns 0 when user was invited by friend.
         Returns 1 when he was not."""
     if login in current_invites:
-        if current_invites[login] == friend_login:
+        if friend_login in current_invites[login]:
             return 0
     return 1
 
@@ -136,7 +138,7 @@ def reject_invite_to_friends_list(*, login, friend_login, token):
     if result == 0:
         if friend_login in users:
             if login in current_invites:
-                current_invites.pop(login)
+                current_invites[login].remove(friend_login)
                 return 0
             else:
                 return 5

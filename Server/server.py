@@ -6,7 +6,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('', 2137))
 
 while True:
-    try:
+    #try:
+    if True:
         data, address = sock.recvfrom(1024)
         print(data)
         JSON_DATA = json.loads(data.decode('utf-8'))
@@ -127,6 +128,7 @@ while True:
                     "long": "Code is wrong."
                 }
         elif JSON_DATA["command"] == "accept_invite":
+            # TODO refactor this, invites is not deleted from current_invites list!
             result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
             if result == 0:
                 is_invited = users.is_invited(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
@@ -160,7 +162,6 @@ while True:
             else:
                 json_response = users.prepare_standard_response(result)
         elif JSON_DATA["command"] == "reject_invite":
-            print("przed: ", users.current_invites)
             result = users.reject_invite_to_friends_list(login=JSON_DATA['login'],
                                                          token=JSON_DATA['token'],
                                                          friend_login=JSON_DATA['friend_login'])
@@ -181,7 +182,6 @@ while True:
                     "short": "Error",
                     "long": "There is not any invite."
                 }
-            print("po: ", users.current_invites)
 
         elif JSON_DATA["command"] == "get_list_of_friends":
             result, list_of_friends = users.get_list_of_friend(login=JSON_DATA["login"],
@@ -210,11 +210,11 @@ while True:
             print("login: ", JSON_DATA["login"])
             print("token: ", JSON_DATA["token"])
             print("friend login: ", JSON_DATA["friend_login"])
-    except KeyError:
-        json_response = {
-            "short": "Error",
-            "long": "Syntax error."
-        }
+    #except KeyError:
+    #    json_response = {
+    #        "short": "Error",
+    #        "long": "Syntax error."
+    #    }
     sock.sendto(json.dumps(json_response).encode(), address)
     print(users.logged_users)
 
