@@ -160,10 +160,29 @@ while True:
             else:
                 json_response = users.prepare_standard_response(result)
         elif JSON_DATA["command"] == "reject_invite":
-            # TODO
-            print("login: ", JSON_DATA["login"])
-            print("token: ", JSON_DATA["token"])
-            print("friend login: ", JSON_DATA["friend_login"])
+            print("przed: ", users.current_invites)
+            result = users.reject_invite_to_friends_list(login=JSON_DATA['login'],
+                                                         token=JSON_DATA['token'],
+                                                         friend_login=JSON_DATA['friend_login'])
+            if result == 0:
+                json_response = {
+                    "short": "OK",
+                    "long": "Invite was rejected.",
+                }
+            elif result in {1, 2, 3}:
+                json_response = users.prepare_standard_response(result)
+            elif result == 4:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is not existed."
+                }
+            elif result == 5:
+                json_response = {
+                    "short": "Error",
+                    "long": "There is not any invite."
+                }
+            print("po: ", users.current_invites)
+
         elif JSON_DATA["command"] == "get_list_of_friends":
             result, list_of_friends = users.get_list_of_friend(login=JSON_DATA["login"],
                                                                token=JSON_DATA['token'])

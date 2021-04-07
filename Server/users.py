@@ -71,7 +71,6 @@ def log_out(*, login, token):
 
 
 def save_invite_if_is_possible(*, login, friend_login, token):
-    # TODO test it
     """Returns 0 when invite was saved.
         Returns 1 when token is incorrect.
         Returns 2 when user with that login is not logged.
@@ -126,6 +125,27 @@ def add_friend(*, login, friend_login):
         return 1
 
 
+def reject_invite_to_friends_list(*, login, friend_login, token):
+    """Returns 0 when invite was rejected.
+        Returns 1 when token is incorrect.
+        Returns 2 when user with that login is not logged.
+        Returns 3 when user with that login is not exist.
+        Returns 4 when friend login is not existed.
+        Returns 5 when there is not any invite."""
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        if friend_login in users:
+            if login in current_invites:
+                current_invites.pop(login)
+                return 0
+            else:
+                return 5
+        else:
+            return 4
+    else:
+        return result
+
+
 def delete_friend(*, login, friend_login, token):
     """Returns 0 when process of deleting new friend was correct.
         Returns 1 when token is incorrect.
@@ -152,6 +172,10 @@ def delete_friend(*, login, friend_login, token):
 
 
 def get_list_of_friend(*, login, token):
+    """Returns 0 and friends list when everything is correct.
+        Returns 1 when token is incorrect.
+        Returns 2 when user with that login is not logged.
+        Returns 3 when user with that login is not exist."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
         return 0, friends[login]
