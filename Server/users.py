@@ -274,6 +274,38 @@ def accept_connection(*, login, token, friend_login):
         return -1
 
 
+def reject_connection(*, login, token, friend_login):
+    # TODO test it
+    """Returns 0 when it is everything okey.
+    Returns 1 when token is incorrect.
+    Returns 2 when user with that login is not logged.
+    Returns 3 when user with that login is not exist.
+    Returns 4 when friend is not existed.
+    Returns 5 when it is not your friend.
+    Returns 6 when login is not in connections dictionary.
+    Returns 7 when you are not invited."""
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        if friend_login in login:
+            if friend_login in friends[login]:
+                if login in connections:
+                    if connections[login][0] == friend_login:
+                        connections[login] = None
+                        return 0
+                    else:
+                        return 7
+                else:
+                    return 6
+            else:
+                return 5
+        else:
+            return 4
+    elif result in {1, 2, 3}:
+        return result
+    else:
+        return -1
+
+
 def generate_token():
     return randrange(0, 2 ** 64)
 
