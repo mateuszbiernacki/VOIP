@@ -195,11 +195,25 @@ while True:
             else:
                 json_response = users.prepare_standard_response(result)
 
-        elif JSON_DATA["command"] == "connect":
-            # TODO
-            print("login: ", JSON_DATA["login"])
-            print("token: ", JSON_DATA["token"])
-            print("friend login: ", JSON_DATA["friend_login"])
+        elif JSON_DATA["command"] == "invite_to_connect":
+            # TODO test it
+            result = users.invite_to_connection(login=JSON_DATA["login"],
+                                                token=JSON_DATA["token"],
+                                                friend_login=JSON_DATA["friend_login"])
+            if result == 0:
+                pass
+            elif result in {1, 2, 3}:
+                json_response = users.prepare_standard_response(result)
+            elif result == 4:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is not existed."
+                }
+            elif result == 5:
+                json_response = {
+                    "short": "Error",
+                    "long": "It is not your friend."
+                }
         elif JSON_DATA["command"] == "accept_connection":
             # TODO
             print("login: ", JSON_DATA["login"])
