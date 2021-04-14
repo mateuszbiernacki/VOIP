@@ -201,6 +201,7 @@ while True:
                                                 token=JSON_DATA["token"],
                                                 friend_login=JSON_DATA["friend_login"])
             if result == 0:
+                # TODO
                 pass
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
@@ -215,16 +216,37 @@ while True:
                     "long": "It is not your friend."
                 }
         elif JSON_DATA["command"] == "accept_connection":
-            # TODO
-            print("login: ", JSON_DATA["login"])
-            print("token: ", JSON_DATA["token"])
-            print("friend login: ", JSON_DATA["friend_login"])
+            # TODO test it
+            result = users.accept_connection(login=JSON_DATA["login"],
+                                             token=JSON_DATA["token"],
+                                             friend_login=JSON_DATA["friend_login"])
+            if result == 0:
+                # TODO
+                pass
+            elif result in {1, 2, 3}:
+                json_response = users.prepare_standard_response(result)
+            elif result == 4:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is not existed."
+                }
+            elif result == 5:
+                json_response = {
+                    "short": "Error",
+                    "long": "It is not your friend."
+                }
+            elif result in {6, 7}:
+                json_response = {
+                    "short": "Error",
+                    "long": f"Friend do not invite you - {result}."
+                }
         elif JSON_DATA["command"] == "reject_connection":
             # TODO test it
             result = users.reject_connection(login=JSON_DATA["login"],
                                              token=JSON_DATA["token"],
                                              friend_login=JSON_DATA["friend_login"])
             if result == 0:
+                # TODO
                 pass
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
