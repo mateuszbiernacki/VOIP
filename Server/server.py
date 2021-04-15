@@ -200,15 +200,20 @@ while True:
             result = users.invite_to_connection(login=JSON_DATA["login"],
                                                 token=JSON_DATA["token"],
                                                 friend_login=JSON_DATA["friend_login"])
+            print(result)
             if result == 0:
-                # TODO
+                # TODO preparing response
+                json_response = {
+                    "short": "OK",
+                    "long": "Invite was sent.",
+                }
                 pass
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
             elif result == 4:
                 json_response = {
                     "short": "Error",
-                    "long": "Friend is not existed."
+                    "long": "Friend is not logged or is not existed."
                 }
             elif result == 5:
                 json_response = {
@@ -221,7 +226,11 @@ while True:
                                              token=JSON_DATA["token"],
                                              friend_login=JSON_DATA["friend_login"])
             if result == 0:
-                # TODO
+                # TODO preparing response
+                json_response = {
+                    "short": "OK",
+                    "long": "Invite was accepted.",
+                }
                 pass
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
@@ -246,8 +255,11 @@ while True:
                                              token=JSON_DATA["token"],
                                              friend_login=JSON_DATA["friend_login"])
             if result == 0:
-                # TODO
-                pass
+                # TODO preparing response
+                json_response = {
+                    "short": "OK",
+                    "long": "Invite was rejected.",
+                }
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
             elif result == 4:

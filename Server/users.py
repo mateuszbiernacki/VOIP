@@ -229,9 +229,10 @@ def invite_to_connection(*, login, token, friend_login):
     Returns 5 when it is not your friend."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in login:
+        if friend_login in logged_users:
             if friend_login in friends[login]:
                 connections[friend_login] = (login, 1)
+                return 0
             else:
                 return 5
         else:
@@ -254,11 +255,11 @@ def accept_connection(*, login, token, friend_login):
     Returns 7 when you are not invited."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in login:
+        if friend_login in logged_users:
             if friend_login in friends[login]:
                 if login in connections:
                     if connections[login][0] == friend_login:
-                        connections[login][1] = 0
+                        connections[login] = (friend_login, 0)
                         return 0
                     else:
                         return 7
@@ -286,7 +287,7 @@ def reject_connection(*, login, token, friend_login):
     Returns 7 when you are not invited."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in login:
+        if friend_login in logged_users:
             if friend_login in friends[login]:
                 if login in connections:
                     if connections[login][0] == friend_login:
