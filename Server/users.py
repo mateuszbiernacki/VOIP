@@ -96,7 +96,7 @@ def save_invite_if_is_possible(*, login, friend_login, token):
         return result
 
 
-def give_address_by_login(*, login):
+def get_address_by_login(*, login):
     return logged_users[login][1]
 
 
