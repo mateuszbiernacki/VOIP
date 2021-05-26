@@ -6,6 +6,7 @@ class Connector:
     def __init__(self):
         self.server_ip = 'localhost'
         self.port = 2137
+        self.login = ''
         self.token = -1
 
     def set_token(self, _token):
@@ -30,4 +31,11 @@ class Connector:
             "login": login,
             "password": password,
             "email": email
+        })
+
+    def log_out(self):
+        return self.send_message_to_server({
+            "command": "logout",
+            "login": self.login,
+            "token": self.token
         })

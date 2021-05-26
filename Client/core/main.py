@@ -26,16 +26,20 @@ class Session:
         ui = main_window.Ui_MainWindow()
         ui.setupUi(_main_window)
 
+        def show_response_dialog(short, long):
+            response_ui.short_label.setText(short)
+            response_ui.long_label.setText(long)
+            _response_dialog.show()
+
         def press_login_button():
             response = _connector.log_in(login_ui.log_line_login.text(), login_ui.log_line_password.text())
             if response["short"] == "OK":
+                _connector.login = login_ui.log_line_login.text()
                 _connector.set_token(response["token"])
                 _main_window.show()
                 _login_dialog.hide()
             else:
-                response_ui.short_label.setText(response["short"])
-                response_ui.long_label.setText(response["long"])
-                _response_dialog.show()
+                show_response_dialog(response["short"], response["long"])
 
         login_ui.button_log.clicked.connect(press_login_button)
 
@@ -43,11 +47,18 @@ class Session:
             response = _connector.registration(login_ui.reg_line_login.text(),
                                                login_ui.reg_line_password.text(),
                                                login_ui.reg_line_email.text())
-            response_ui.short_label.setText(response["short"])
-            response_ui.long_label.setText(response["long"])
-            _response_dialog.show()
+            show_response_dialog(response["short"], response["long"])
 
         login_ui.button_reg.clicked.connect(press_register_button)
+
+        def logout_button():
+            response = _connector.log_out()
+            if response["short"] == "OK":
+                _main_window.hide()
+                _login_dialog.show()
+            show_response_dialog(response["short"], response["long"])
+
+        ui.log_out_button.clicked.connect(logout_button)
 
         _login_dialog.show()
         sys.exit(app.exec_())
