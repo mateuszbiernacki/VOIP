@@ -39,6 +39,16 @@ class Session:
 
         login_ui.button_log.clicked.connect(press_login_button)
 
+        def press_register_button():
+            response = _connector.registration(login_ui.reg_line_login.text(),
+                                               login_ui.reg_line_password.text(),
+                                               login_ui.reg_line_email.text())
+            response_ui.short_label.setText(response["short"])
+            response_ui.long_label.setText(response["long"])
+            _response_dialog.show()
+
+        login_ui.button_reg.clicked.connect(press_register_button)
+
         _login_dialog.show()
         sys.exit(app.exec_())
 

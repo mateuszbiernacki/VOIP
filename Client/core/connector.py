@@ -23,3 +23,11 @@ class Connector:
             "login": login,
             "password": password
         })
+
+    def registration(self, login, password, email):
+        return self.send_message_to_server({
+            "command": "registration",
+            "login": login,
+            "password": password,
+            "email": email
+        })
