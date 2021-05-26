@@ -14,3 +14,4 @@ if __name__ == '__main__':
     sock.sendto(json.dumps(JSON_DATA).encode(), ("192.168.2.62", 2137))
     data, address = sock.recvfrom(1024)
     print(data)
+

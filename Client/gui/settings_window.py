@@ -25,7 +25,7 @@ class Ui_Dialog(object):
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(Dialog)
         self.label_2.setGeometry(QtCore.QRect(50, 120, 71, 16))
-        self.label_2.setObjectName("label_2")
+        self.label_2.setObjectName("long_response")
         self.ip_line = QtWidgets.QLineEdit(Dialog)
         self.ip_line.setGeometry(QtCore.QRect(220, 60, 113, 20))
         self.ip_line.setObjectName("ip_line")

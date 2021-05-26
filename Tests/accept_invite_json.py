@@ -4,7 +4,7 @@ import json
 JSON_DATA = {
     "command": "accept_invite",
     "login": "wiki",
-    "token": 10619485022883048315,
+    "token": 10890098891420766509,
     "friend_login": "mateusz"
 }
 

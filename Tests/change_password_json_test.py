@@ -4,8 +4,8 @@ import json
 JSON_DATA = {
     "command": "change_password",
     "login": "bo",
-    "code": 11461996606833321489,
-    "new_password": "123"
+    "code": 981693421572431036,
+    "new_password": "12344565"
 }
 
 if __name__ == '__main__':
