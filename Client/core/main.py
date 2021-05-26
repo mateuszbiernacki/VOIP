@@ -1,6 +1,7 @@
 import Client.gui.log_reg_window as log_window
 import Client.gui.main_view as main_window
 import Client.gui.response_window as response_window
+import Client.gui.settings_window as settings_window
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from connector import Connector
@@ -21,6 +22,10 @@ class Session:
         _response_dialog = QtWidgets.QDialog()
         response_ui = response_window.Ui_Dialog()
         response_ui.setupUi(_response_dialog)
+
+        _settings_dialog = QtWidgets.QDialog()
+        settings_ui = settings_window.Ui_Dialog()
+        settings_ui.setupUi(_settings_dialog)
 
         _main_window = QtWidgets.QMainWindow()
         ui = main_window.Ui_MainWindow()
@@ -50,6 +55,23 @@ class Session:
             show_response_dialog(response["short"], response["long"])
 
         login_ui.button_reg.clicked.connect(press_register_button)
+
+        def press_settings_button():
+            settings_ui.ip_line.setText(_connector.server_ip)
+            settings_ui.port_line.setText(str(_connector.port))
+            _settings_dialog.show()
+
+        login_ui.button_settings.clicked.connect(press_settings_button)
+
+        def set_server_data():
+            _connector.server_ip = settings_ui.ip_line.text()
+            try:
+                _connector.port = int(settings_ui.port_line.text())
+            except ValueError:
+                _connector.port = 2137
+            print(_connector.server_ip)
+
+        settings_ui.buttonBox.accepted.connect(set_server_data)
 
         def logout_button():
             response = _connector.log_out()
