@@ -110,6 +110,17 @@ class Session:
 
         forgot_pass_ui.check_code_button.clicked.connect(change_password_button)
 
+        def delete_friend_button():
+            friend_login = ui.list_of_friends.item(ui.list_of_friends.currentRow()).text()
+            response = _connector.delete_friend(friend_login)
+            list_of_friends = _connector.get_list_of_friends()['list_of_friends']
+            ui.list_of_friends.clear()
+            for friend in list_of_friends:
+                ui.list_of_friends.addItem(friend)
+            show_response_dialog(response["short"], response["long"])
+
+        ui.delete_friend_list_buton.clicked.connect(delete_friend_button)
+
         _login_dialog.show()
         sys.exit(app.exec_())
 

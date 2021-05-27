@@ -60,3 +60,11 @@ class Connector:
             "code": code,
             "new_password": new_password
         })
+
+    def delete_friend(self, friend_login):
+        return self.send_message_to_server({
+            "command": "remove_friend",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })
