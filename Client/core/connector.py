@@ -39,3 +39,24 @@ class Connector:
             "login": self.login,
             "token": self.token
         })
+
+    def get_list_of_friends(self):
+        return self.send_message_to_server({
+            "command": "get_list_of_friends",
+            "login": self.login,
+            "token": self.token
+        })
+
+    def forgot_password(self, login):
+        return self.send_message_to_server({
+            "command": "forgot_password",
+            "login": login
+        })
+
+    def change_password(self, login, code, new_password):
+        return self.send_message_to_server({
+            "command": "change_password",
+            "login": login,
+            "code": code,
+            "new_password": new_password
+        })

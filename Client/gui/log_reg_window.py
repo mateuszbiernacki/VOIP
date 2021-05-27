@@ -38,12 +38,15 @@ class Ui_Login_Register(object):
         self.log_line_login.setObjectName("log_line_login")
         self.log_line_password = QtWidgets.QLineEdit(Login_Register)
         self.log_line_password.setGeometry(QtCore.QRect(70, 160, 113, 20))
+        self.log_line_password.setText("")
+        self.log_line_password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.log_line_password.setObjectName("log_line_password")
         self.reg_line_login = QtWidgets.QLineEdit(Login_Register)
         self.reg_line_login.setGeometry(QtCore.QRect(270, 110, 113, 20))
         self.reg_line_login.setObjectName("reg_line_login")
         self.reg_line_password = QtWidgets.QLineEdit(Login_Register)
         self.reg_line_password.setGeometry(QtCore.QRect(270, 160, 113, 20))
+        self.reg_line_password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.reg_line_password.setObjectName("reg_line_password")
         self.reg_line_email = QtWidgets.QLineEdit(Login_Register)
         self.reg_line_email.setGeometry(QtCore.QRect(270, 210, 113, 20))
@@ -57,6 +60,9 @@ class Ui_Login_Register(object):
         self.button_settings = QtWidgets.QPushButton(Login_Register)
         self.button_settings.setGeometry(QtCore.QRect(20, 270, 75, 23))
         self.button_settings.setObjectName("button_settings")
+        self.button_forgot_password = QtWidgets.QPushButton(Login_Register)
+        self.button_forgot_password.setGeometry(QtCore.QRect(110, 270, 75, 23))
+        self.button_forgot_password.setObjectName("button_forgot_password")
 
         self.retranslateUi(Login_Register)
         QtCore.QMetaObject.connectSlotsByName(Login_Register)
@@ -73,6 +79,7 @@ class Ui_Login_Register(object):
         self.button_reg.setText(_translate("Login_Register", "Register"))
         self.button_log.setText(_translate("Login_Register", "Log in"))
         self.button_settings.setText(_translate("Login_Register", "Settings"))
+        self.button_forgot_password.setText(_translate("Login_Register", "Forgot pass"))
 
 
 if __name__ == "__main__":
