@@ -78,6 +78,7 @@ class Session:
                     Session.ui.list_of_friends.addItem(friend)
                 Session._main_window.show()
                 Session._login_dialog.hide()
+                receiver.set_address(response['address'])
                 receive_thread.start()
             else:
                 show_response_dialog(response["short"], response["long"])

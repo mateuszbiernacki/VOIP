@@ -2,12 +2,14 @@ import socket
 import json
 import users
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('', 2137))
+#sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#sock.bind(('', 2137))
 
 while True:
     # try:
     if True:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind(('', 2137))
         data, address = sock.recvfrom(1024)
         print(data)
         JSON_DATA = json.loads(data.decode('utf-8'))
@@ -31,7 +33,8 @@ while True:
                 json_response = {
                     "short": "OK",
                     "long": "Successfully logged.",
-                    "token": result
+                    "token": result,
+                    "address": address
                 }
         elif JSON_DATA["command"] == "logout":
             result = users.log_out(login=JSON_DATA["login"], token=JSON_DATA["token"])
@@ -52,9 +55,11 @@ while True:
             result = users.save_invite_if_is_possible(login=JSON_DATA['login'],
                                                       friend_login=JSON_DATA['friend_login'],
                                                       token=JSON_DATA['token'])
+
             if result == 0:
                 sock.sendto(json.dumps({"short": "s_inv_to_friends", "friend_login": JSON_DATA["login"]}).encode(),
                             users.get_address_by_login(login=JSON_DATA["friend_login"]))
+                print(f'Invite sent to {users.get_address_by_login(login=JSON_DATA["friend_login"])}')
                 json_response = {
                     "short": "OK",
                     "long": "Invite was sent."
@@ -293,4 +298,5 @@ while True:
     #        "long": "Syntax error."
     #    }
     sock.sendto(json.dumps(json_response).encode(), address)
+    sock.close()
     print(users.logged_users)
