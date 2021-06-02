@@ -6,7 +6,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('', 2137))
 
 while True:
-    #try:
+    # try:
     if True:
         data, address = sock.recvfrom(1024)
         print(data)
@@ -53,7 +53,8 @@ while True:
                                                       friend_login=JSON_DATA['friend_login'],
                                                       token=JSON_DATA['token'])
             if result == 0:
-
+                sock.sendto(json.dumps({"short": "s_inv_to_friends", "friend_login": JSON_DATA["login"]}).encode(),
+                            users.get_address_by_login(login=JSON_DATA["friend_login"]))
                 json_response = {
                     "short": "OK",
                     "long": "Invite was sent."
@@ -231,7 +232,8 @@ while True:
                 # Server sends information about acceptation to friend's client.
                 sock.sendto(json.dumps({"short": "s_inv_acc",
                                         "friend_login": JSON_DATA["login"],
-                                        'address': users.get_address_by_login(login=JSON_DATA["friend_login"])}).encode(),
+                                        'address': users.get_address_by_login(
+                                            login=JSON_DATA["friend_login"])}).encode(),
                             users.get_address_by_login(login=JSON_DATA["friend_login"]))
                 json_response = {
                     "short": "OK",
@@ -285,11 +287,10 @@ while True:
                     "short": "Error",
                     "long": f"Friend do not invite you - {result}."
                 }
-    #except KeyError:
+    # except KeyError:
     #    json_response = {
     #        "short": "Error",
     #        "long": "Syntax error."
     #    }
     sock.sendto(json.dumps(json_response).encode(), address)
     print(users.logged_users)
-

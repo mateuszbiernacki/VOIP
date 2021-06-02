@@ -68,3 +68,11 @@ class Connector:
             "token": self.token,
             "friend_login": friend_login
         })
+
+    def invite_friend(self, friend_login):
+        return self.send_message_to_server({
+            "command": "invite_friend",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })

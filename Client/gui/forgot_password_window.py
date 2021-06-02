@@ -20,7 +20,7 @@ class Ui_Dialog(object):
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(Dialog)
         self.label_2.setGeometry(QtCore.QRect(30, 160, 91, 20))
-        self.label_2.setObjectName("label_2")
+        self.label_2.setObjectName("friend_login_label")
         self.login_input_line = QtWidgets.QLineEdit(Dialog)
         self.login_input_line.setGeometry(QtCore.QRect(120, 80, 113, 20))
         self.login_input_line.setObjectName("login_input_line")

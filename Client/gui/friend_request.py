@@ -15,21 +15,21 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(400, 300)
-        self.accept_button = QtWidgets.QPushButton(Dialog)
-        self.accept_button.setGeometry(QtCore.QRect(40, 260, 75, 23))
-        self.accept_button.setObjectName("accept_button")
+        self.accept_buton = QtWidgets.QPushButton(Dialog)
+        self.accept_buton.setGeometry(QtCore.QRect(40, 260, 75, 23))
+        self.accept_buton.setObjectName("accept_buton")
         self.deny_button = QtWidgets.QPushButton(Dialog)
         self.deny_button.setGeometry(QtCore.QRect(290, 260, 75, 23))
         self.deny_button.setObjectName("deny_button")
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(50, 120, 131, 16))
         self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setGeometry(QtCore.QRect(170, 90, 161, 71))
+        self.friend_login_label = QtWidgets.QLabel(Dialog)
+        self.friend_login_label.setGeometry(QtCore.QRect(170, 90, 161, 71))
         font = QtGui.QFont()
         font.setPointSize(20)
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("long_response")
+        self.friend_login_label.setFont(font)
+        self.friend_login_label.setObjectName("friend_login_label")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -37,10 +37,10 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.accept_button.setText(_translate("Dialog", "Accept"))
+        self.accept_buton.setText(_translate("Dialog", "Accept"))
         self.deny_button.setText(_translate("Dialog", "Deny"))
         self.label.setText(_translate("Dialog", "Friend request from:"))
-        self.label_2.setText(_translate("Dialog", "friend__login"))
+        self.friend_login_label.setText(_translate("Dialog", "friend__login"))
 
 
 if __name__ == "__main__":
