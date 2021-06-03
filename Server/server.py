@@ -2,8 +2,11 @@ import socket
 import json
 import users
 
-#sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#sock.bind(('', 2137))
+# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# sock.bind(('', 2137))
+data_to_send = {}
+for user in users.users:
+    data_to_send[user] = []
 
 while True:
     # try:
@@ -57,9 +60,11 @@ while True:
                                                       token=JSON_DATA['token'])
 
             if result == 0:
-                sock.sendto(json.dumps({"short": "s_inv_to_friends", "friend_login": JSON_DATA["login"]}).encode(),
-                            users.get_address_by_login(login=JSON_DATA["friend_login"]))
-                print(f'Invite sent to {users.get_address_by_login(login=JSON_DATA["friend_login"])}')
+                # sock.sendto(json.dumps({"short": "s_inv_to_friends", "friend_login": JSON_DATA["login"]}).encode(),
+                #             users.get_address_by_login(login=JSON_DATA["friend_login"]))
+                # print(f'Invite sent to {users.get_address_by_login(login=JSON_DATA["friend_login"])}')
+                data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_to_friends",
+                                                                "friend_login": JSON_DATA["login"]})
                 json_response = {
                     "short": "OK",
                     "long": "Invite was sent."
@@ -76,6 +81,19 @@ while True:
                 }
             else:
                 json_response = users.prepare_standard_response(result)
+        elif JSON_DATA['command'] == 'get_message':
+            result = users.is_it_correct_user_token(login=JSON_DATA['login'],
+                                                    token=JSON_DATA['token'])
+            if result in {1, 2, 3}:
+                json_response = users.prepare_standard_response(result)
+            elif result == 0:
+                if not data_to_send[JSON_DATA['login']]:
+                    json_response = {
+                        'short': 'no_message',
+                        'long': 'No message in queue'
+                    }
+                else:
+                    json_response = data_to_send[JSON_DATA['login']].pop(0)
         elif JSON_DATA["command"] == "remove_friend":
             result = users.delete_friend(login=JSON_DATA['login'],
                                          friend_login=JSON_DATA['friend_login'],
@@ -85,6 +103,8 @@ while True:
                     "short": "OK",
                     "long": "User was successfully deleted from friend list."
                 }
+                data_to_send[JSON_DATA['friend_login']].append({"short": "new_friend",
+                                                                "friend_login": JSON_DATA["login"]})
             elif result in {1, 2, 3}:
                 json_response = users.prepare_standard_response(result)
             elif result == 4:
@@ -160,6 +180,11 @@ while True:
                         "short": "OK",
                         "long": "Friend was added."
                     }
+                    data_to_send[JSON_DATA['friend_login']].append({"short": "new_friend",
+                                                                    "friend_login": JSON_DATA["login"]})
+                    data_to_send[JSON_DATA['login']].append({"short": "new_friend",
+                                                             "friend_login": JSON_DATA["friend_login"]})
+
                 elif result_1 == 0 and result_0 == 0 and is_invited == 1:
                     json_response = {
                         "short": "Error",

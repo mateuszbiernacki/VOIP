@@ -1,9 +1,7 @@
 import sys
-import time
-import threading
 
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QObject, pyqtSignal, QThread
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QTimer
 
 import Client.gui.forgot_password_window as forgot_password_window
 import Client.gui.friend_request as friend_request
@@ -12,7 +10,6 @@ import Client.gui.main_view as main_window
 import Client.gui.response_window as response_window
 import Client.gui.settings_window as settings_window
 from connector import Connector
-from receiver import Receiver
 
 
 class Session:
@@ -56,15 +53,19 @@ class Session:
             Session.friend_req_ui.friend_login_label.setText(friend_login)
             Session._friend_req_dialog.show()
 
-        receiver = Receiver()
-        receive_thread = QThread()
-        receiver.moveToThread(receive_thread)
+        timer = QTimer()
 
-        receive_thread.started.connect(receiver.run)
-        receiver.finished.connect(receive_thread.quit)
-        receiver.finished.connect(receiver.deleteLater)
-        receive_thread.finished.connect(receive_thread.deleteLater)
-        receiver.show_friend_request.connect(friend_request_dialog)
+        def check_message_queue():
+            data_from_server = Session._connector.get_message()
+            if data_from_server['short'] == 's_inv_to_friends':
+                friend_request_dialog(data_from_server['friend_login'])
+            elif data_from_server['short'] == 'new_friend':
+                list_of_friends = Session._connector.get_list_of_friends()['list_of_friends']
+                Session.ui.list_of_friends.clear()
+                for friend in list_of_friends:
+                    Session.ui.list_of_friends.addItem(friend)
+
+        timer.timeout.connect(check_message_queue)
 
         def press_login_button():
             response = Session._connector.log_in(Session.login_ui.log_line_login.text(),
@@ -78,8 +79,7 @@ class Session:
                     Session.ui.list_of_friends.addItem(friend)
                 Session._main_window.show()
                 Session._login_dialog.hide()
-                receiver.set_address(response['address'])
-                receive_thread.start()
+                timer.start(999)
             else:
                 show_response_dialog(response["short"], response["long"])
 
@@ -115,6 +115,7 @@ class Session:
             if response["short"] == "OK":
                 Session._main_window.hide()
                 Session._login_dialog.show()
+                timer.stop()
             show_response_dialog(response["short"], response["long"])
 
         Session.ui.log_out_button.clicked.connect(logout_button)
@@ -156,6 +157,13 @@ class Session:
             show_response_dialog(response["short"], response["long"])
 
         Session.ui.send_invite_button.clicked.connect(invite_friend_button)
+
+        def accept_friends_invite():
+            response = Session._connector.accept_invite(Session.friend_req_ui.friend_login_label.text())
+            if response['short'] != 'OK':
+                show_response_dialog(response['short'], response['long'])
+
+        Session.friend_req_ui.accept_buton.clicked.connect(accept_friends_invite)
 
         Session._login_dialog.show()
         sys.exit(Session.app.exec_())

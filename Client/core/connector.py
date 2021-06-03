@@ -76,3 +76,18 @@ class Connector:
             "token": self.token,
             "friend_login": friend_login
         })
+
+    def get_message(self):
+        return self.send_message_to_server({
+            "command": "get_message",
+            "login": self.login,
+            "token": self.token
+        })
+
+    def accept_invite(self, friend_login):
+        return self.send_message_to_server({
+            "command": "accept_invite",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })
