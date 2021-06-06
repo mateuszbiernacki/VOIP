@@ -60,14 +60,36 @@ while True:
                                                       token=JSON_DATA['token'])
 
             if result == 0:
-                # sock.sendto(json.dumps({"short": "s_inv_to_friends", "friend_login": JSON_DATA["login"]}).encode(),
-                #             users.get_address_by_login(login=JSON_DATA["friend_login"]))
-                # print(f'Invite sent to {users.get_address_by_login(login=JSON_DATA["friend_login"])}')
                 data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_to_friends",
                                                                 "friend_login": JSON_DATA["login"]})
                 json_response = {
                     "short": "OK",
                     "long": "Invite was sent."
+                }
+            elif result == 4:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is not existed."
+                }
+            elif result == 5:
+                json_response = {
+                    "short": "Error",
+                    "long": "Friend is not logged."
+                }
+            else:
+                json_response = users.prepare_standard_response(result)
+        elif JSON_DATA["command"] == "send_message_to_friend":
+            result = users.check_friendship(login=JSON_DATA['login'],
+                                            friend_login=JSON_DATA['friend_login'],
+                                            token=JSON_DATA['token'])
+
+            if result == 0:
+                data_to_send[JSON_DATA['friend_login']].append({"short": "new_message",
+                                                                "friend_login": JSON_DATA["login"],
+                                                                'message': JSON_DATA['message']})
+                json_response = {
+                    "short": "OK",
+                    "long": "Message was sent."
                 }
             elif result == 4:
                 json_response = {

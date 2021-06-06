@@ -96,6 +96,28 @@ def save_invite_if_is_possible(*, login, friend_login, token):
         return result
 
 
+def check_friendship(*, login, friend_login, token):
+    """Returns 0 when it's a friend.
+        Returns 1 when token is incorrect.
+        Returns 2 when user with that login is not logged.
+        Returns 3 when user with that login is not exist.
+        Returns 4 when friend is not existed.
+        Returns 5 when friend is not logged."""
+
+    result = is_it_correct_user_token(login=login, token=token)
+    if result == 0:
+        if friend_login in users:
+            if friend_login in logged_users:
+
+                return 0
+            else:
+                return 5
+        else:
+            return 4
+    else:
+        return result
+
+
 def get_address_by_login(*, login):
     return logged_users[login][1]
 

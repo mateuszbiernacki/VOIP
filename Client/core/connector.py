@@ -91,3 +91,12 @@ class Connector:
             "token": self.token,
             "friend_login": friend_login
         })
+
+    def send_message_to_friend(self, friend_login, message):
+        return self.send_message_to_server({
+            "command": "send_message_to_friend",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login,
+            'message': message
+        })

@@ -41,6 +41,8 @@ class Session:
     ui = main_window.Ui_MainWindow()
     ui.setupUi(_main_window)
 
+    conversations = {}
+
     @staticmethod
     def start_session():
 
@@ -64,6 +66,15 @@ class Session:
                 Session.ui.list_of_friends.clear()
                 for friend in list_of_friends:
                     Session.ui.list_of_friends.addItem(friend)
+            elif data_from_server['short'] == 'new_message':
+                friend_login = data_from_server['friend_login']
+                message = data_from_server['message']
+                if friend_login in Session.conversations:
+                    Session.conversations[data_from_server['friend_login']] += f"\n[{friend_login}]: {message}"
+                else:
+                    Session.conversations[data_from_server['friend_login']] = f"[{friend_login}]: {message}"
+                if Session.ui.list_of_friends.item(Session.ui.list_of_friends.currentRow()).text() == friend_login:
+                    Session.ui.real_chat_area.setText(Session.conversations[friend_login])
 
         timer.timeout.connect(check_message_queue)
 
@@ -164,6 +175,26 @@ class Session:
                 show_response_dialog(response['short'], response['long'])
 
         Session.friend_req_ui.accept_buton.clicked.connect(accept_friends_invite)
+
+        def show_conversation():
+            friend_login = Session.ui.list_of_friends.item(Session.ui.list_of_friends.currentRow()).text()
+            Session.ui.real_chat_area.clear()
+            if friend_login in Session.conversations:
+                Session.ui.real_chat_area.setText(Session.conversations[friend_login])
+        Session.ui.list_of_friends.doubleClicked.connect(show_conversation)
+
+        def send_message():
+            friend_login = Session.ui.list_of_friends.item(Session.ui.list_of_friends.currentRow()).text()
+            message = Session.ui.textEdit.toPlainText()
+            result = Session._connector.send_message_to_friend(friend_login, message)
+            if result['short'] == 'OK':
+                if friend_login in Session.conversations:
+                    Session.conversations[friend_login] += f"\n[{Session._connector.login}]: {message}"
+                else:
+                    Session.conversations[friend_login] = f"[{Session._connector.login}]: {message}"
+                Session.ui.real_chat_area.setText(Session.conversations[friend_login])
+
+        Session.ui.send_message_button.clicked.connect(send_message)
 
         Session._login_dialog.show()
         sys.exit(Session.app.exec_())
