@@ -54,7 +54,7 @@ class VoiceConnection:
             try:
                 #data = self.recording_stream.read(512)
                 data = 'hello'
-                self.s.sendto(data, (self.target_ip, self.target_port))
+                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, self.target_port))
             except Exception as e:
                 print(e.with_traceback())
 
@@ -121,7 +121,7 @@ class VoiceConnection2:
             try:
                 #data = self.recording_stream.read(512)
                 data = 'aaaa'
-                self.s.sendto(data, (self.target_ip, self.target_port))
+                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, self.target_port))
                 #print('ok2')
             except Exception as e:
                 print(e.with_traceback())
