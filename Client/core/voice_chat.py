@@ -44,17 +44,17 @@ class VoiceConnection:
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                self.playing_stream.write(data)
-                print('ok1')
+                #self.playing_stream.write(data)
+                print(data)
             except Exception as e:
                 print(e.with_traceback())
 
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(512)
+                #data = self.recording_stream.read(512)
+                data = 'hello'
                 self.s.sendto(data, (self.target_ip, self.target_port))
-                print('ok2')
             except Exception as e:
                 print(e.with_traceback())
 
@@ -108,18 +108,20 @@ class VoiceConnection2:
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                self.playing_stream.write(data)
+                #self.playing_stream.write(data)
+                print(data)
                 self.target_ip = address[0]
                 self.target_port = address[1]
-                print('ok1')
+                #print('ok1')
             except Exception as e:
                 print(e.with_traceback())
 
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(512)
+                #data = self.recording_stream.read(512)
+                data = 'aaaa'
                 self.s.sendto(data, (self.target_ip, self.target_port))
-                print('ok2')
+                #print('ok2')
             except Exception as e:
                 print(e.with_traceback())
