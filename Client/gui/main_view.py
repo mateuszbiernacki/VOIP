@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_view.ui'
+# Form implementation generated from reading ui file 'Client\gui\qt_des\main_view.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -48,21 +48,18 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(10, 420, 151, 16))
-        self.label_2.setObjectName("long_response")
+        self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(310, 20, 131, 16))
         self.label_3.setObjectName("label_3")
         self.log_out_button = QtWidgets.QPushButton(self.centralwidget)
         self.log_out_button.setGeometry(QtCore.QRect(710, 10, 75, 23))
         self.log_out_button.setObjectName("log_out_button")
-        self.up_friend_list_button = QtWidgets.QPushButton(self.centralwidget)
-        self.up_friend_list_button.setGeometry(QtCore.QRect(190, 40, 75, 23))
-        self.up_friend_list_button.setObjectName("up_friend_list_button")
-        self.down_friend_list_button = QtWidgets.QPushButton(self.centralwidget)
-        self.down_friend_list_button.setGeometry(QtCore.QRect(190, 70, 75, 23))
-        self.down_friend_list_button.setObjectName("down_friend_list_button")
+        self.call_button = QtWidgets.QPushButton(self.centralwidget)
+        self.call_button.setGeometry(QtCore.QRect(190, 40, 75, 23))
+        self.call_button.setObjectName("call_button")
         self.delete_friend_list_buton = QtWidgets.QPushButton(self.centralwidget)
-        self.delete_friend_list_buton.setGeometry(QtCore.QRect(190, 100, 75, 23))
+        self.delete_friend_list_buton.setGeometry(QtCore.QRect(190, 80, 75, 23))
         self.delete_friend_list_buton.setObjectName("delete_friend_list_buton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -88,8 +85,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Invite friend by login:"))
         self.label_3.setText(_translate("MainWindow", "Real Chat:"))
         self.log_out_button.setText(_translate("MainWindow", "Log out"))
-        self.up_friend_list_button.setText(_translate("MainWindow", "▲"))
-        self.down_friend_list_button.setText(_translate("MainWindow", "▼"))
+        self.call_button.setText(_translate("MainWindow", "Call"))
         self.delete_friend_list_buton.setText(_translate("MainWindow", "Delete"))
 
 

@@ -100,3 +100,27 @@ class Connector:
             "friend_login": friend_login,
             'message': message
         })
+
+    def invite_to_connect(self, friend_login):
+        return self.send_message_to_server({
+            "command": "invite_to_connect",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })
+
+    def accept_connection(self, friend_login):
+        return self.send_message_to_server({
+            "command": "accept_connection",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })
+
+    def reject_connection(self, friend_login):
+        return self.send_message_to_server({
+            "command": "reject_connection",
+            "login": self.login,
+            "token": self.token,
+            "friend_login": friend_login
+        })

@@ -256,8 +256,9 @@ while True:
             print(result)
             if result == 0:
                 # Server sends invite to friend's client.
-                sock.sendto(json.dumps({"short": "s_inv_con", "friend_login": JSON_DATA["login"]}).encode(),
-                            users.get_address_by_login(login=JSON_DATA["friend_login"]))
+                data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_con",
+                                                                "friend_login": JSON_DATA["login"]})
+                print(JSON_DATA["login"])
                 json_response = {
                     "short": "OK",
                     "long": "Invite was sent.",
@@ -282,11 +283,10 @@ while True:
                                              friend_login=JSON_DATA["friend_login"])
             if result == 0:
                 # Server sends information about acceptation to friend's client.
-                sock.sendto(json.dumps({"short": "s_inv_acc",
-                                        "friend_login": JSON_DATA["login"],
-                                        'address': users.get_address_by_login(
-                                            login=JSON_DATA["friend_login"])}).encode(),
-                            users.get_address_by_login(login=JSON_DATA["friend_login"]))
+                data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_acc",
+                                                                "friend_login": JSON_DATA["login"],
+                                                                'address': users.get_address_by_login(
+                                                                    login=JSON_DATA["friend_login"])})
                 json_response = {
                     "short": "OK",
                     "long": "Invite was accepted.",
@@ -316,8 +316,8 @@ while True:
                                              friend_login=JSON_DATA["friend_login"])
             if result == 0:
                 # Server sends information about rejection to friend's client.
-                sock.sendto(json.dumps({"short": "s_inv_rej", "friend_login": JSON_DATA["login"]}).encode(),
-                            users.get_address_by_login(login=JSON_DATA["friend_login"]))
+                data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_rej",
+                                                                "friend_login": JSON_DATA["login"]})
                 json_response = {
                     "short": "OK",
                     "long": "Invite was rejected.",
