@@ -6,7 +6,7 @@ import pyaudio
 class VoiceConnection:
     def __init__(self, friend_ip):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.target_ip = friend_ip
+        self.target_ip = '192.168.0.126'
         self.target_port = 20001
 
         chunk_size = 1024  # 512
@@ -46,6 +46,7 @@ class VoiceConnection:
                 data, address = self.s.recvfrom(1024)
                 #self.playing_stream.write(data)
                 print(data)
+                print('1')
             except Exception as e:
                 print(e)
 
