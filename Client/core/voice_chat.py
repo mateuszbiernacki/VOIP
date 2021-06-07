@@ -7,7 +7,8 @@ class VoiceConnection:
     def __init__(self, friend_ip):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.s.bind(('', 20001))
-        self.target_ip = '192.168.0.126'
+        print(friend_ip)
+        self.target_ip = '192.168.1.27'
         self.target_port = 20001
 
         chunk_size = 1024  # 512
@@ -44,18 +45,18 @@ class VoiceConnection:
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                #self.playing_stream.write(data)
-                print(data)
-                print('1')
+                self.playing_stream.write(data)
+                #print(data)
+                #print('1')
             except Exception as e:
                 print(e)
 
     def send_data(self):
         while True:
             try:
-                #data = self.recording_stream.read(512)
-                data = 'hello'
-                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, 20001))
+                data = self.recording_stream.read(512)
+                #data = 'hello'
+                self.s.sendto(data, (self.target_ip, 20001))
             except Exception as e:
                 print(e)
 
@@ -110,8 +111,8 @@ class VoiceConnection2:
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                #self.playing_stream.write(data)
-                print(data)
+                self.playing_stream.write(data)
+                #print(data)
                 #print('ok1')
             except Exception as e:
                 print(e)
@@ -119,9 +120,9 @@ class VoiceConnection2:
     def send_data(self):
         while True:
             try:
-                #data = self.recording_stream.read(512)
-                data = 'aaaa'
-                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, 20001))
+                data = self.recording_stream.read(512)
+                #data = 'aaaa'
+                self.s.sendto(data, (self.target_ip, 20001))
                 #print('ok2')
             except Exception as e:
                 print(e)
