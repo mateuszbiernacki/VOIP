@@ -40,7 +40,7 @@ class VoiceConnection:
         self.send_data()
 
     def receive_server_data(self):
-        self.s.bind(('', self.target_port))
+        self.s.bind((self.target_ip, 20001))
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
@@ -55,7 +55,7 @@ class VoiceConnection:
             try:
                 #data = self.recording_stream.read(512)
                 data = 'hello'
-                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, self.target_port))
+                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, 20001))
             except Exception as e:
                 print(e)
 
@@ -121,7 +121,7 @@ class VoiceConnection2:
             try:
                 #data = self.recording_stream.read(512)
                 data = 'aaaa'
-                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, self.target_port))
+                self.s.sendto(bytes(data, 'utf-8'), (self.target_ip, 20001))
                 #print('ok2')
             except Exception as e:
                 print(e)
