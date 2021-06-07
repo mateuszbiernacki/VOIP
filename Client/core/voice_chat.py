@@ -6,6 +6,7 @@ import pyaudio
 class VoiceConnection:
     def __init__(self, friend_ip):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.bind(('', 20001))
         self.target_ip = '192.168.0.126'
         self.target_port = 20001
 
@@ -40,7 +41,6 @@ class VoiceConnection:
         self.send_data()
 
     def receive_server_data(self):
-        self.s.bind(('', 20001))
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
