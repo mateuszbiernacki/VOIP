@@ -4,7 +4,7 @@ import socket
 
 class Connector:
     def __init__(self):
-        self.server_ip = 'localhost'
+        self.server_ip = '192.168.0.50'
         self.port = 2137
         self.login = ''
         self.token = -1

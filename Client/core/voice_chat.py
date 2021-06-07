@@ -21,23 +21,23 @@ class VoiceConnection:
         self.recording_stream = self.p.open(format=audio_format, channels=channels, rate=rate, input=True,
                                             frames_per_buffer=chunk_size)
 
-        try:
-            print('a')
-            data = self.recording_stream.read(512)
-            print('a')
-            self.s.sendto(data, (self.target_ip, self.target_port))
-            print('a')
-            rec_data, address = self.s.recvfrom(512)
-            print('a')
-            self.playing_stream.write(rec_data)
-            print('a')
-        except Exception as e:
-            print(e)
+        # try:
+        #     print('a')
+        #     data = self.recording_stream.read(512)
+        #     print('a')
+        #     self.s.sendto(data, (self.target_ip, self.target_port))
+        #     print(self.target_ip)
+        #     rec_data, address = self.s.recvfrom(512)
+        #     print('a')
+        #     self.playing_stream.write(rec_data)
+        #     print('a')
+        # except Exception as e:
+        #     print(e)
 
         # start threads
-        # self.receive_thread = threading.Thread(target=self.receive_server_data)
-        # self.receive_thread.start()
-        # self.send_data()
+        self.receive_thread = threading.Thread(target=self.receive_server_data)
+        self.receive_thread.start()
+        self.send_data()
 
     def receive_server_data(self):
 
@@ -52,7 +52,7 @@ class VoiceConnection:
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(1024)
+                data = self.recording_stream.read(512)
                 self.s.sendto(data, (self.target_ip, self.target_port))
                 print('ok2')
             except Exception as e:
@@ -82,26 +82,26 @@ class VoiceConnection2:
 
         print("Connected to Server")
 
-        try:
-            print('b')
-            rec_data, address = self.s.recvfrom(1024)
-            print('b')
-            self.playing_stream.write(rec_data)
-            print('b')
-            data = self.recording_stream.read(512)
-            print('b')
-            self.s.sendto(data, address)
-            print('b')
-            print('ok1')
-        except Exception as e:
-            print(e)
+        # try:
+        #     print('b')
+        #     rec_data, address = self.s.recvfrom(1024)
+        #     print('b')
+        #     self.playing_stream.write(rec_data)
+        #     print('b')
+        #     data = self.recording_stream.read(512)
+        #     print('b')
+        #     self.s.sendto(data, address)
+        #     print('b')
+        #     print('ok1')
+        # except Exception as e:
+        #     print(e)
 
         # start threads
-        # self.receive_thread = threading.Thread(target=self.receive_server_data)
-        # self.receive_thread.start()
-        # self.target_ip = None
-        # self.target_port = None
-        # self.send_data()
+        self.receive_thread = threading.Thread(target=self.receive_server_data)
+        self.receive_thread.start()
+        self.target_ip = None
+        self.target_port = None
+        self.send_data()
 
     def receive_server_data(self):
 
@@ -118,7 +118,7 @@ class VoiceConnection2:
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(1024)
+                data = self.recording_stream.read(512)
                 self.s.sendto(data, (self.target_ip, self.target_port))
                 print('ok2')
             except Exception as e:
