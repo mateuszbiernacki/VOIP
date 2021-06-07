@@ -40,7 +40,7 @@ class VoiceConnection:
         self.send_data()
 
     def receive_server_data(self):
-        self.s.bind((self.target_ip, self.target_port))
+        self.s.bind(('', self.target_port))
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
