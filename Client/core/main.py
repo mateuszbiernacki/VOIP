@@ -1,4 +1,5 @@
 import sys
+import threading
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer
@@ -11,7 +12,7 @@ import Client.gui.response_window as response_window
 import Client.gui.settings_window as settings_window
 import Client.gui.incoming_call_window as incoming_call_window
 import Client.gui.call_window as call_window
-from voice_chat import VoiceConnection
+from voice_chat import VoiceConnection, VoiceConnection2
 from connector import Connector
 
 
@@ -93,7 +94,11 @@ class Session:
                 Session._incoming_call_dialog.show()
             elif data_from_server['short'] == 's_inv_acc':
                 show_response_dialog(data_from_server['short'], 'acc')
-                # Session.voice_conn = VoiceConnection(data_from_server['address'][0])
+
+                def voip():
+                    Session.voice_conn = VoiceConnection(data_from_server['address'][0])
+                thread = threading.Thread(target=voip)
+                thread.start()
             elif data_from_server['short'] == 's_inv_rej':
                 show_response_dialog(data_from_server['short'], 'deny')
 
@@ -231,7 +236,11 @@ class Session:
             friend_login = Session.incoming_call_ui.login.text()
             result = Session._connector.accept_connection(friend_login)
             if result['short'] == 'OK':
-                #Session.voice_conn = VoiceConnection()
+                def voip():
+                    Session.voice_conn = VoiceConnection2()
+
+                thread = threading.Thread(target=voip)
+                thread.start()
                 print('ok')
             else:
                 show_response_dialog(result['short'], result['long'])
