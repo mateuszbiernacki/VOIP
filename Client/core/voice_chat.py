@@ -8,7 +8,7 @@ class VoiceConnection:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.s.bind(('', 20001))
         print(friend_ip)
-        self.target_ip = '192.168.1.27'
+        self.target_ip = friend_ip
         self.target_port = 20001
 
         chunk_size = 1024  # 512

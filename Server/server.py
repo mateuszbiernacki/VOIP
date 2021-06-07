@@ -286,7 +286,7 @@ while True:
                 data_to_send[JSON_DATA['friend_login']].append({"short": "s_inv_acc",
                                                                 "friend_login": JSON_DATA["login"],
                                                                 'address': users.get_address_by_login(
-                                                                    login=JSON_DATA["friend_login"])})
+                                                                    login=JSON_DATA["login"])})
                 json_response = {
                     "short": "OK",
                     "long": "Invite was accepted.",
