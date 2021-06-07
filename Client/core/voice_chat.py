@@ -97,10 +97,11 @@ class VoiceConnection2:
         #     print(e)
 
         # start threads
+        data, address = self.s.recvfrom(1024)
+        self.target_ip = address[0]
+        self.target_port = address[1]
         self.receive_thread = threading.Thread(target=self.receive_server_data)
         self.receive_thread.start()
-        self.target_ip = None
-        self.target_port = None
         self.send_data()
 
     def receive_server_data(self):
@@ -110,8 +111,6 @@ class VoiceConnection2:
                 data, address = self.s.recvfrom(1024)
                 #self.playing_stream.write(data)
                 print(data)
-                self.target_ip = address[0]
-                self.target_port = address[1]
                 #print('ok1')
             except Exception as e:
                 print(e)
