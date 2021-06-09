@@ -1,5 +1,6 @@
 import json
 import socket
+import hashlib
 
 
 class Connector:
@@ -22,14 +23,14 @@ class Connector:
         return self.send_message_to_server({
             "command": "login",
             "login": login,
-            "password": password
+            "password": hashlib.sha512(password.encode()).hexdigest()
         })
 
     def registration(self, login, password, email):
         return self.send_message_to_server({
             "command": "registration",
             "login": login,
-            "password": password,
+            "password": hashlib.sha512(password.encode()).hexdigest(),
             "email": email
         })
 
