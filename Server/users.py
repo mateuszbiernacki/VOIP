@@ -1,22 +1,12 @@
 from random import randrange
 import json
 from _smtp import send_email
+from database_connector import DBConnector
 
-try:
-    file = open(f"Data/users.json", "r")
-    users = json.loads(file.read())
-except json.decoder.JSONDecodeError:
-    users = {}
-else:
-    file.close()
 
-try:
-    file = open(f"Data/friends.json", "r")
-    friends = json.loads(file.read())
-except json.decoder.JSONDecodeError:
-    friends = {}
-else:
-    file.close()
+PATH_TO_USERS_DATABASE = 'TestData/users.db'
+
+db = DBConnector()
 logged_users = {}
 current_invites = {}
 forgot_password_codes = {}
@@ -26,21 +16,10 @@ connections = {}
 def add_user(*, login, password, email):
     """Returns 0 when process of adding new users was correct.
     Returns 1 when login is occupied."""
-    if login in users:
+    if db.check_user_exits(login):
         return 1
     else:
-        try:
-            users[login] = (password, email)
-            users_file = open(f"Data/users.json", "w")
-            users_file.write(json.dumps(users))
-            users_file.close()
-            friends[login] = []
-            friends_file = open(f"Data/friends.json", "w")
-            friends_file.write(json.dumps(friends))
-            friends_file.close()
-        except OSError:
-            return 2
-        print(users)
+        db.add_user(login, password, email)
         return 0
 
 
@@ -48,8 +27,8 @@ def logg_in(*, login, password, address):
     """Returns -2 when password is wrong.
     Returns -1 when user is not exist.
     Returns token when user was successfully logged."""
-    if login in users:
-        if password == users[login][0]:
+    if db.check_user_exits(login):
+        if db.check_user_password(login, password):
             token = generate_token()
             logged_users[login] = (token, address)
             return token
@@ -81,7 +60,7 @@ def save_invite_if_is_possible(*, login, friend_login, token):
 
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in users:
+        if db.check_user_exits(friend_login):
             if friend_login in logged_users:
                 if friend_login in current_invites:
                     current_invites[friend_login].append(login)
@@ -106,7 +85,7 @@ def check_friendship(*, login, friend_login, token):
 
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in users:
+        if db.check_user_exits(friend_login):
             if friend_login in logged_users:
 
                 return 0
@@ -133,17 +112,18 @@ def is_invited(*, login, friend_login):
 
 def add_friend(*, login, friend_login):
     """Returns 0 when process of adding new friend was correct.
-    Returns 1 when there is authorization problem.
-    Returns 2 when friend is already in friend list."""
-    if login in users:
-        if friend_login in users:
-            if friend_login in friends[login]:
+    Returns 1 when friend is not exits.
+    Returns 2 when friend is on your friends list already.
+    Returns 3 when friend is not invited you."""
+    if db.check_user_exits(login):
+        if db.check_user_exits(friend_login):
+            if db.check_friendship(login, friend_login):
                 return 2
-            friends[login].append(friend_login)
-            friends_file = open(f"Data/friends.json", "w")
-            friends_file.write(json.dumps(friends))
-            friends_file.close()
-            return 0
+            elif friend_login in current_invites[login]:
+                db.set_new_friend(login, friend_login)
+                current_invites[login].remove(friend_login)
+                return 0
+            return 3
         else:
             return 1
     else:
@@ -159,7 +139,7 @@ def reject_invite_to_friends_list(*, login, friend_login, token):
         Returns 5 when there is not any invite."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in users:
+        if db.check_user_exits(friend_login):
             if login in current_invites:
                 current_invites[login].remove(friend_login)
                 return 0
@@ -180,13 +160,9 @@ def delete_friend(*, login, friend_login, token):
         Returns 5 when that is not your current friend."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        if friend_login in users:
-            if friend_login in friends[login]:
-                friends[login].remove(friend_login)
-                friends[friend_login].remove(login)
-                friends_file = open(f"Data/friends.json", "w")
-                friends_file.write(json.dumps(friends))
-                friends_file.close()
+        if db.check_user_exits(friend_login):
+            if db.check_friendship(login, friend_login):
+                db.delete_friendship(login, friend_login)
                 return 0
             else:
                 return 5
@@ -203,7 +179,7 @@ def get_list_of_friend(*, login, token):
         Returns 3 when user with that login is not exist."""
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
-        return 0, friends[login]
+        return 0, db.get_list_of_friend(login)
     else:
         return result, []
 
@@ -211,9 +187,9 @@ def get_list_of_friend(*, login, token):
 def forgot_password__send_code(*, login):
     """Return 0 when code was send.
     Return 1 when it was not."""
-    if login in users:
+    if db.check_user_exits(login):
         code = generate_token()
-        send_email(to=users[login][1], subject='Authentication Code', message=f'Your code: {code}')
+        send_email(to=db.get_user_email(login), subject='Authentication Code', message=f'Your code: {code}')
         forgot_password_codes[login] = code
         return 0
     else:
@@ -225,13 +201,10 @@ def change_password(*, login, code, new_password):
     Return 1 when that login is not existed.
     Return 2 when there is not generated code yet.
     Return 3 when code is wrong."""
-    if login in users:
+    if db.check_user_exits(login):
         if login in forgot_password_codes:
             if code == forgot_password_codes[login]:
-                users[login][0] = new_password
-                users_file = open(f"Data/users.json", "w")
-                users_file.write(json.dumps(users))
-                users_file.close()
+                db.change_password(login, new_password)
                 return 0
             else:
                 return 3
@@ -252,7 +225,7 @@ def invite_to_connection(*, login, token, friend_login):
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
         if friend_login in logged_users:
-            if friend_login in friends[login]:
+            if db.check_friendship(login, friend_login):
                 connections[friend_login] = (login, 1)
                 return 0
             else:
@@ -278,7 +251,7 @@ def accept_connection(*, login, token, friend_login):
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
         if friend_login in logged_users:
-            if friend_login in friends[login]:
+            if db.check_friendship(login, friend_login):
                 if login in connections:
                     if connections[login][0] == friend_login:
                         connections[login] = (friend_login, 0)
@@ -310,7 +283,7 @@ def reject_connection(*, login, token, friend_login):
     result = is_it_correct_user_token(login=login, token=token)
     if result == 0:
         if friend_login in logged_users:
-            if friend_login in friends[login]:
+            if db.check_friendship(login, friend_login):
                 if login in connections:
                     if connections[login][0] == friend_login:
                         connections[login] = None
@@ -338,7 +311,7 @@ def is_it_correct_user_token(*, login, token):
     Returns 1 when token is incorrect.
     Returns 2 when user with that login is not logged.
     Returns 3 when user with that login is not exist."""
-    if login in users:
+    if db.check_user_exits(login):
         if login in logged_users:
             if token == logged_users[login][0]:
                 return 0

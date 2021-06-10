@@ -1,16 +1,17 @@
 import socket
 import json
+import sqlite3
+
 import users
 
 # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # sock.bind(('', 2137))
 data_to_send = {}
-for user in users.users:
+for user in users.db.get_list_of_users():
     data_to_send[user] = []
 
 while True:
-    # try:
-    if True:
+    try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind(('', 2137))
         data, address = sock.recvfrom(1024)
@@ -33,6 +34,7 @@ while True:
                     "long": "Bad password."
                 }
             else:
+                data_to_send[JSON_DATA["login"]] = []
                 json_response = {
                     "short": "OK",
                     "long": "Successfully logged.",
@@ -176,41 +178,32 @@ while True:
                     "long": "Code is wrong."
                 }
         elif JSON_DATA["command"] == "accept_invite":
-            # TODO refactor this, invites is not deleted from current_invites list!
             result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
             if result == 0:
-                is_invited = users.is_invited(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
-                result_0 = users.add_friend(login=JSON_DATA["login"], friend_login=JSON_DATA["friend_login"])
-                result_1 = users.add_friend(login=JSON_DATA["friend_login"], friend_login=JSON_DATA["login"])
-                if result_0 != result_1:
-                    json_response = {
-                        "short": "BigError",
-                        "long": "Problem with consistence of data. Please contact with system administrator."
-                    }
-                elif result_1 == 2 or result_0 == 2:
-                    json_response = {
-                        "short": "Error",
-                        "long": "Friend is already in friend list."
-                    }
-                elif result_1 == 1 or result_0 == 1:
-                    json_response = {
-                        "short": "Error",
-                        "long": "There is not user with that login."
-                    }
-                elif result_1 == 0 and result_0 == 0 and is_invited == 0:
-                    json_response = {
-                        "short": "OK",
-                        "long": "Friend was added."
-                    }
+                result = users.add_friend(login=JSON_DATA['login'], friend_login=JSON_DATA['friend_login'])
+                if result == 0:
                     data_to_send[JSON_DATA['friend_login']].append({"short": "new_friend",
                                                                     "friend_login": JSON_DATA["login"]})
                     data_to_send[JSON_DATA['login']].append({"short": "new_friend",
                                                              "friend_login": JSON_DATA["friend_login"]})
-
-                elif result_1 == 0 and result_0 == 0 and is_invited == 1:
+                    json_response = {
+                        "short": "OK",
+                        "long": "Invite was accepted.",
+                    }
+                elif result == 1:
                     json_response = {
                         "short": "Error",
-                        "long": "Friend was not invite you."
+                        "long": "User with that login doesn't exist.",
+                    }
+                elif result == 2:
+                    json_response = {
+                        "short": "Error",
+                        "long": "It's your friend already.",
+                    }
+                elif result == 3:
+                    json_response = {
+                        "short": "Error",
+                        "long": "You didn't get invite.",
                     }
             else:
                 json_response = users.prepare_standard_response(result)
@@ -340,10 +333,15 @@ while True:
                     "long": f"Friend do not invite you - {result}."
                 }
     # except KeyError:
-    #    json_response = {
-    #        "short": "Error",
-    #        "long": "Syntax error."
-    #    }
+    #     json_response = {
+    #         "short": "Error",
+    #         "long": "Syntax error."
+    #     }
+    except sqlite3.IntegrityError:
+        json_response = {
+            "short": "Error",
+            "long": "Bad input data."
+        }
     sock.sendto(json.dumps(json_response).encode(), address)
     sock.close()
     print(users.logged_users)
