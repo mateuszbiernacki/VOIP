@@ -112,14 +112,18 @@ def is_invited(*, login, friend_login):
 
 def add_friend(*, login, friend_login):
     """Returns 0 when process of adding new friend was correct.
-    Returns 1 when there is authorization problem.
-    Returns 2 when friend is already in friend list."""
+    Returns 1 when friend is not exits.
+    Returns 2 when friend is on your friends list already.
+    Returns 3 when friend is not invited you."""
     if db.check_user_exits(login):
         if db.check_user_exits(friend_login):
             if db.check_friendship(login, friend_login):
                 return 2
-            db.set_new_friend(login, friend_login)
-            return 0
+            elif friend_login in current_invites[login]:
+                db.set_new_friend(login, friend_login)
+                current_invites[login].remove(friend_login)
+                return 0
+            return 3
         else:
             return 1
     else:

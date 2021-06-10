@@ -178,7 +178,6 @@ while True:
                     "long": "Code is wrong."
                 }
         elif JSON_DATA["command"] == "accept_invite":
-            # TODO refactor this, invites is not deleted from current_invites list!
             result = users.is_it_correct_user_token(login=JSON_DATA['login'], token=JSON_DATA['token'])
             if result == 0:
                 result = users.add_friend(login=JSON_DATA['login'], friend_login=JSON_DATA['friend_login'])
@@ -200,6 +199,11 @@ while True:
                     json_response = {
                         "short": "Error",
                         "long": "It's your friend already.",
+                    }
+                elif result == 3:
+                    json_response = {
+                        "short": "Error",
+                        "long": "You didn't get invite.",
                     }
             else:
                 json_response = users.prepare_standard_response(result)
