@@ -7,13 +7,14 @@ PATH_TO_USERS_DATABASE = 'TestData/users.db'
 def install_database():
     database_connection = sqlite3.connect(PATH_TO_USERS_DATABASE)
     cursor = database_connection.cursor()
-    # cursor.execute('create table users (login text primary key, password text, email text unique)')
-    # cursor.execute('create table friends (login text not null, friend_login text not null, '
-    #                'foreign key (login, friend_login) references users (login, login),'
-    #                'unique (login, friend_login))')
-    # cursor.execute('drop table friends')
+    cursor.execute('create table users (login text primary key, password text, email text unique)')
+    cursor.execute('create table friends (login text not null, friend_login text not null, '
+                   'foreign key (login, friend_login) references users (login, login),'
+                   'unique (login, friend_login))')
     database_connection.commit()
     database_connection.close()
+
+
 
 
 class DBConnector:
@@ -53,7 +54,7 @@ class DBConnector:
 
     def get_list_of_users(self) -> []:
         self.cursor.execute('select login from users')
-        return self.cursor.fetchall()
+        return [user_tuple[0] for user_tuple in self.cursor.fetchall()]
 
     def set_new_friend(self, login, friend_login):
         self.cursor.execute('insert into friends values (?, ?)', (login, friend_login))
@@ -69,7 +70,7 @@ class DBConnector:
 
     def get_list_of_friend(self, login) -> []:
         self.cursor.execute('select friend_login from friends where login=:login', {'login': login})
-        return self.cursor.fetchall()
+        return [friend_tuple[0] for friend_tuple in self.cursor.fetchall()]
 
     def check_friendship(self, login, friend_login) -> bool:
         self.cursor.execute('select * from friends where login=:login and friend_login=:friend_login',
@@ -79,6 +80,14 @@ class DBConnector:
         else:
             return True
 
+    def change_password(self, login, new_password):
+        self.cursor.execute('update users'
+                            'set password=:new_password'
+                            'where'
+                            'login=:login',
+                            {'login': login, 'new_password': new_password})
+        self.connection.commit()
+
 
 if __name__ == '__main__':
 
@@ -86,8 +95,8 @@ if __name__ == '__main__':
     # db.add_user('mati', '123', 'mail@123')
     # db.add_user('mati1', '123', 'mail@1232')
     # print(db.get_list_of_users())
-    db.set_new_friend('mati', 'mati1')
+    # db.set_new_friend('bat', 'pat')
     # db.delete_friendship('mati1', 'mati')
-    # print(db.get_list_of_friend('mati1'))
-    print(db.check_friendship('mati', 'mati1'))
+    print(db.get_list_of_users())
+    # print(db.check_friendship('mati', 'mati1'))
     # install_database()
