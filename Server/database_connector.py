@@ -1,7 +1,7 @@
 import sqlite3
 
 
-PATH_TO_USERS_DATABASE = 'TestData/users.db'
+PATH_TO_USERS_DATABASE = 'Data/users.db'
 
 
 def install_database():
