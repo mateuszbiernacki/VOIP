@@ -2,6 +2,7 @@ import socket
 import threading
 import pyaudio
 
+# problem z korzystania z jednego tego samego socketu?
 
 class VoiceConnection:
     def __init__(self, friend_ip):
@@ -32,15 +33,18 @@ class VoiceConnection:
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                self.playing_stream.write(data)
+                # self.playing_stream.write(data)
+                print('recive', data)
             except Exception as e:
                 print(e)
 
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(512)
+                # data = self.recording_stream.read(512)
+                data = '=I send data.'
                 self.s.sendto(data, (self.target_ip, 20001))
+                print('send: ', data)
             except Exception as e:
                 print(e)
 
@@ -77,18 +81,20 @@ class VoiceConnection2:
         self.send_data()
 
     def receive_server_data(self):
-
         while True:
             try:
                 data, address = self.s.recvfrom(1024)
-                self.playing_stream.write(data)
+                # self.playing_stream.write(data)
+                print('recive', data)
             except Exception as e:
                 print(e)
 
     def send_data(self):
         while True:
             try:
-                data = self.recording_stream.read(512)
-                self.s.sendto(data, (self.target_ip, self.target_port))
+                # data = self.recording_stream.read(512)
+                data = '%I send data.'
+                self.s.sendto(data, (self.target_ip, 20001))
+                print('send: ', data)
             except Exception as e:
                 print(e)

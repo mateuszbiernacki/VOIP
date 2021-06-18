@@ -15,8 +15,6 @@ def install_database():
     database_connection.close()
 
 
-
-
 class DBConnector:
 
     def __init__(self, path=PATH_TO_USERS_DATABASE):
@@ -97,6 +95,6 @@ if __name__ == '__main__':
     # print(db.get_list_of_users())
     # db.set_new_friend('bat', 'pat')
     # db.delete_friendship('mati1', 'mati')
-    print(db.get_list_of_users())
+    # print(db.get_list_of_users())
     # print(db.check_friendship('mati', 'mati1'))
     # install_database()
