@@ -21,6 +21,8 @@ class Session:
 
     app = QtWidgets.QApplication(sys.argv)
 
+    voice_thread = None
+
     _login_dialog = QtWidgets.QDialog()
     login_ui = log_window.Ui_Login_Register()
     login_ui.setupUi(_login_dialog)
@@ -99,6 +101,7 @@ class Session:
                     Session.voice_conn = VoiceConnection(data_from_server['address'][0])
                 thread = threading.Thread(target=voip)
                 thread.start()
+                Session.voice_thread = thread
             elif data_from_server['short'] == 's_inv_rej':
                 show_response_dialog(data_from_server['short'], 'deny')
 
@@ -235,12 +238,15 @@ class Session:
         def accept_call():
             friend_login = Session.incoming_call_ui.login.text()
             result = Session._connector.accept_connection(friend_login)
+            Session._incoming_call_dialog.hide()
             if result['short'] == 'OK':
                 def voip():
                     Session.voice_conn = VoiceConnection2()
 
                 thread = threading.Thread(target=voip)
                 thread.start()
+                Session.voice_thread = thread
+                Session._call_dialog.show()
                 print('ok')
             else:
                 show_response_dialog(result['short'], result['long'])
@@ -250,12 +256,19 @@ class Session:
         def deny_call():
             friend_login = Session.incoming_call_ui.login.text()
             result = Session._connector.reject_connection(friend_login)
+            Session._incoming_call_dialog.hide()
             if result['short'] == 'OK':
                 print('deny')
             else:
                 show_response_dialog(result['short'], result['long'])
 
         Session.incoming_call_ui.pushButton.clicked.connect(deny_call)
+
+        def end_call():
+            Session._call_dialog.hide()
+            pass
+
+        Session.call_ui.end_button.clicked.connect(end_call)
 
         Session._login_dialog.show()
         sys.exit(Session.app.exec_())
