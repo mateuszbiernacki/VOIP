@@ -21,8 +21,6 @@ class Session:
 
     app = QtWidgets.QApplication(sys.argv)
 
-    voice_thread = None
-
     _login_dialog = QtWidgets.QDialog()
     login_ui = log_window.Ui_Login_Register()
     login_ui.setupUi(_login_dialog)
@@ -101,7 +99,6 @@ class Session:
                     Session.voice_conn = VoiceConnection(data_from_server['address'][0])
                 thread = threading.Thread(target=voip)
                 thread.start()
-                Session.voice_thread = thread
             elif data_from_server['short'] == 's_inv_rej':
                 show_response_dialog(data_from_server['short'], 'deny')
 
@@ -245,7 +242,6 @@ class Session:
 
                 thread = threading.Thread(target=voip)
                 thread.start()
-                Session.voice_thread = thread
                 Session._call_dialog.show()
                 print('ok')
             else:
