@@ -2,7 +2,6 @@ import socket
 import threading
 import pyaudio
 
-# problem z korzystania z jednego tego samego socketu?
 
 class VoiceConnection:
     def __init__(self, friend_ip):

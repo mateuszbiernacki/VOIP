@@ -99,6 +99,7 @@ class Session:
                     Session.voice_conn = VoiceConnection(data_from_server['address'][0])
                 thread = threading.Thread(target=voip)
                 thread.start()
+                Session._call_dialog.show()
             elif data_from_server['short'] == 's_inv_rej':
                 show_response_dialog(data_from_server['short'], 'deny')
 
